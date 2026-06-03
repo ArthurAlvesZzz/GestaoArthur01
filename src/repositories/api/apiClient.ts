@@ -1,5 +1,30 @@
+export const getApiBaseUrl = () => {
+    return localStorage.getItem('gestaoos_api_base_url') || '';
+};
+
+export const setApiBaseUrl = (url: string) => {
+    localStorage.setItem('gestaoos_api_base_url', url);
+};
+
+export const clearApiBaseUrl = () => {
+    localStorage.removeItem('gestaoos_api_base_url');
+};
+
 export async function safeFetch(url: string, options?: RequestInit): Promise<any> {
-    const res = await fetch(url, options);
+    const baseUrl = getApiBaseUrl();
+    const finalUrl = baseUrl && url.startsWith('/') ? `${baseUrl}${url}` : url;
+
+    // Use token if available
+    const token = localStorage.getItem('gestaoos_token');
+    const finalOptions = { ...options };
+    if (token) {
+       finalOptions.headers = {
+           ...finalOptions.headers,
+           'Authorization': `Bearer ${token}`
+       };
+    }
+
+    const res = await fetch(finalUrl, finalOptions);
     
     const contentType = res.headers.get('content-type');
     const isJson = contentType && contentType.includes('application/json');

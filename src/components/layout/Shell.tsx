@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import { 
   LayoutDashboard, ShoppingCart, Package, Factory, 
-  Wallet, Users, FileText, Settings, Bell, Plus, Coffee, Briefcase, Layers
+  Wallet, Users, FileText, Settings, Bell, Plus, Coffee, Briefcase, Layers, Server
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Page } from '../../App';
@@ -67,13 +67,29 @@ export function Shell({ children, currentPage, onNavigate }: ShellProps) {
           <div className="px-3 mt-8 mb-2 text-xs font-medium text-zinc-500 uppercase tracking-wider">Sistema</div>
           
           <button
+            onClick={() => onNavigate('conexao')}
+            className={cn(
+              "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors hover:bg-zinc-900",
+              currentPage === 'conexao' ? "bg-zinc-800 text-zinc-50 font-medium" : "text-zinc-400"
+            )}
+          >
+            <div className="flex items-center gap-3">
+              <Server size={18} className={currentPage === 'conexao' ? "text-zinc-50" : "text-zinc-400"} />
+              Conexão
+            </div>
+            <div className={`w-2 h-2 rounded-full ${
+               localStorage.getItem('DATA_MODE') === 'api' ? (localStorage.getItem('gestaoos_api_base_url') ? 'bg-emerald-500' : 'bg-amber-500') : 'bg-zinc-500'
+            }`} title="Status de conexão"></div>
+          </button>
+          
+          <button
             onClick={() => onNavigate('config')}
             className={cn(
-              "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors hover:bg-zinc-900 hover:text-zinc-100",
+              "w-full flex items-center gap-3 px-3 py-2 mt-1 rounded-lg text-sm transition-colors hover:bg-zinc-900 hover:text-zinc-100",
               currentPage === 'config' ? "bg-zinc-800 text-zinc-50 font-medium" : "text-zinc-400"
             )}
           >
-            <Settings size={18} className="text-zinc-400" />
+            <Settings size={18} className={currentPage === 'config' ? "text-zinc-50" : "text-zinc-400"} />
             Configurações
           </button>
         </div>

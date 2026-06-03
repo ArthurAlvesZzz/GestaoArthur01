@@ -18,10 +18,11 @@ import { AssinaturasAdmin } from './pages/AssinaturasAdmin';
 import { LojaPublica } from './pages/LojaPublica';
 import { RastreabilidadePublica } from './pages/RastreabilidadePublica';
 import { Crm } from './pages/Crm';
+import { ConexaoServidor } from './pages/ConexaoServidor';
 
 import { B2BCatalog } from './pages/B2BCatalog';
 
-export type Page = 'dashboard' | 'comercial' | 'clientes' | 'crm' | 'catalogo' | 'b2bcatalog' | 'estoque' | 'producao' | 'financeiro' | 'rh' | 'fiscal' | 'consignacao' | 'assinaturas' | 'config' | 'relatorios';
+export type Page = 'dashboard' | 'comercial' | 'clientes' | 'crm' | 'catalogo' | 'b2bcatalog' | 'estoque' | 'producao' | 'financeiro' | 'rh' | 'fiscal' | 'consignacao' | 'assinaturas' | 'config' | 'relatorios' | 'conexao';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('dashboard');
@@ -104,6 +105,8 @@ export default function App() {
         return <Consignacao />;
       case 'assinaturas':
         return <AssinaturasAdmin />;
+      case 'conexao':
+        return <ConexaoServidor />;
       case 'config':
         return <Configuracoes />;
       case 'relatorios':
@@ -124,8 +127,9 @@ export default function App() {
   return (
     <RepositoryProvider providerType={providerType} onFallbackToMock={handleFallback}>
       {hasFallenBack && (
-        <div className="bg-amber-950 border-b border-amber-900/50 text-amber-500 text-sm px-4 py-2 text-center relative z-[60]">
-          <strong>Aviso DEV:</strong> Banco de dados não configurado (DATABASE_URL) ou fora do ar. O app caiu automaticamente para "Mock Mode" para continuar funcionando no preview.
+        <div className="bg-red-950 border-b border-red-900/50 text-red-500 text-sm px-4 py-3 text-center relative z-[60] flex flex-col sm:flex-row items-center justify-center gap-2">
+          <span><strong>Erro de Conexão:</strong> Não foi possível acessar o servidor da base de dados ({localStorage.getItem('gestaoos_api_base_url') || 'Local'}).</span>
+          <button onClick={() => setCurrentPage('conexao')} className="bg-red-900 hover:bg-red-800 text-white px-3 py-1 rounded text-xs font-semibold uppercase tracking-wider transition-colors ml-2">Configurar Conexão</button>
         </div>
       )}
       <Shell currentPage={currentPage} onNavigate={setCurrentPage}>

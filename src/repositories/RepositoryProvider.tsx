@@ -57,6 +57,8 @@ import { IB2BCatalogRepository } from './interfaces/IB2BCatalogRepository';
 import { IQualityRepository } from './interfaces/IQualityRepository';
 import { ITraceabilityRepository } from './interfaces/ITraceabilityRepository';
 
+import { safeFetch } from './api/apiClient';
+
 export type DataProviderType = 'mock' | 'api';
 
 interface Repositories {
@@ -95,27 +97,19 @@ export function RepositoryProvider({ children, providerType = 'mock', onFallback
 
   useEffect(() => {
     if (providerType === 'api') {
-      fetch('/api/health')
-        .then(res => {
-          // Verify JSON content before parsing to protect against HTML fallback
-          const contentType = res.headers.get('content-type');
-          if (!contentType || !contentType.includes('application/json')) {
-             throw new Error('Not JSON. Possibly Vite fallback.');
-          }
-          return res.json();
-        })
+      safeFetch('/api/health')
         .then(data => {
           if (data.status !== 'ok') {
-            console.warn('API DB unhealthy, falling back to mock');
-            setActualType('mock');
+            console.warn('API DB unhealthy');
+            if (process.env.NODE_ENV === 'development') setActualType('mock');
             if (onFallbackToMock) onFallbackToMock();
           } else {
             setActualType('api');
           }
         })
         .catch(err => {
-          console.warn('Failed to reach API, falling back to mock', err);
-          setActualType('mock');
+          console.warn('Failed to reach API', err);
+          if (process.env.NODE_ENV === 'development') setActualType('mock');
           if (onFallbackToMock) onFallbackToMock();
         })
         .finally(() => {

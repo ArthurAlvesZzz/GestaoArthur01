@@ -50,7 +50,7 @@ export function TraceabilityDrawer({ traceId, onClose, onSuccess }: Traceability
   const loadApprovedReviews = async () => {
     try {
       const all = await qualityRepo.getReviews();
-      const approved = all.filter(r => r.status === 'Approved');
+      const approved = all.filter(r => r.status === 'approved' || r.status === 'approved_with_notes');
       setApprovedReviews(approved);
     } catch (e) {
       console.error(e);

@@ -121,11 +121,11 @@ export async function startBatch(req: Request, res: Response) {
 export async function completeBatch(req: Request, res: Response) {
   const tenantId = (req as any).tenantId;
   const { id } = req.params;
-  const { finalWeight, packagedQty, costPerUnit } = req.body;
+  const { finalWeight, packagedQty } = req.body;
   
   await prisma.productionBatch.updateMany({ 
     where: { id, tenantId }, 
-    data: { status: 'completed', finalWeight, packagedQty, costPerUnit } 
+    data: { status: 'completed', finalWeight, packagedQty } 
   });
   
   const batch = await prisma.productionBatch.findFirst({ where: { id, tenantId } });
@@ -175,20 +175,28 @@ export async function createBatchFromDemand(req: Request, res: Response) {
   const tenantId = (req as any).tenantId;
   const { productId, plannedQuantity, recipeId, roastProfileId, masterRoasterId, inputs, finalWeight, packagedQuantity } = req.body;
   
+  const product = await prisma.product.findUnique({ where: { id: productId } });
+  if (!product) return res.status(404).json({ error: 'Produto final não encontrado' });
+
   const batch = await prisma.$transaction(async (tx) => {
     const b = await tx.productionBatch.create({
       data: {
         tenantId,
+        code: `PRD-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
         status: 'completed',
-        productId,
+        date: new Date(),
+        finalProductId: productId,
+        finalProductName: product.name,
+        finalQty: packagedQuantity || 0,
+        yieldPercent: finalWeight && plannedQuantity ? (finalWeight / plannedQuantity) * 100 : 0,
+        lossPercent: finalWeight && plannedQuantity ? ((plannedQuantity - finalWeight) / plannedQuantity) * 100 : 0,
         recipeId,
         roastProfileId,
         masterRoasterId,
         initialWeight: plannedQuantity,
-        finalWeight,
-        packagedQty: packagedQuantity,
+        finalWeight: finalWeight || 0,
+        packagedQty: packagedQuantity || 0,
         plannedDate: new Date(),
-        costPerUnit: 0
       }
     });
 

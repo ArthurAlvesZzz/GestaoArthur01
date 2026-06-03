@@ -3,7 +3,7 @@ import prisma from '../lib/prisma';
 
 export async function getB2BCatalog(req: Request, res: Response) {
   const tenantId = (req as any).tenantId;
-  const items = await prisma.b2bCatalogItem.findMany({ 
+  const items = await prisma.b2BCatalogItem.findMany({ 
     where: { tenantId }, 
     include: { product: true },
     orderBy: { createdAt: 'desc' } 
@@ -14,7 +14,7 @@ export async function getB2BCatalog(req: Request, res: Response) {
 export async function createB2BCatalogItem(req: Request, res: Response) {
   const tenantId = (req as any).tenantId;
   const data = req.body;
-  const item = await prisma.b2bCatalogItem.create({
+  const item = await prisma.b2BCatalogItem.create({
     data: { ...data, tenantId },
     include: { product: true }
   });
@@ -26,8 +26,8 @@ export async function updateB2BCatalogItem(req: Request, res: Response) {
   const { id } = req.params;
   const data = req.body;
   
-  await prisma.b2bCatalogItem.updateMany({ where: { id, tenantId }, data });
-  const item = await prisma.b2bCatalogItem.findFirst({ 
+  await prisma.b2BCatalogItem.updateMany({ where: { id, tenantId }, data });
+  const item = await prisma.b2BCatalogItem.findFirst({ 
     where: { id, tenantId },
     include: { product: true }
   });

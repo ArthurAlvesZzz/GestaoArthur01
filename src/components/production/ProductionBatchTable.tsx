@@ -46,16 +46,16 @@ export function ProductionBatchTable({ batches, onOpenDetail, onFinalize }: Prod
                 </td>
                 <td className="px-6 py-4">
                   <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${
-                    ['Concluído', 'completed'].includes(b.status) ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
-                    ['Em Produção', 'roasting'].includes(b.status) ? 'bg-sky-500/10 text-sky-400 border-sky-500/20' :
-                    ['Cancelado', 'cancelled'].includes(b.status) ? 'bg-zinc-800 text-zinc-400 border-zinc-700' :
-                    ['Rascunho', 'draft'].includes(b.status) ? 'bg-zinc-800 text-zinc-500 border-zinc-700' :
+                    ['Concluído', 'completed'].includes(b.status as string) ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                    ['Em Produção', 'roasting'].includes(b.status as string) ? 'bg-sky-500/10 text-sky-400 border-sky-500/20' :
+                    ['Cancelado', 'cancelled'].includes(b.status as string) ? 'bg-zinc-800 text-zinc-400 border-zinc-700' :
+                    ['Rascunho', 'draft'].includes(b.status as string) ? 'bg-zinc-800 text-zinc-500 border-zinc-700' :
                     'bg-amber-500/10 text-amber-400 border-amber-500/20'
                   }`}>
-                    {b.status === 'completed' ? 'Concluído' : 
-                     b.status === 'roasting' ? 'Torrando' :
-                     b.status === 'cancelled' ? 'Cancelado' :
-                     b.status === 'draft' ? 'Rascunho' :
+                    {(b.status as string) === 'completed' ? 'Concluído' : 
+                     (b.status as string) === 'roasting' ? 'Torrando' :
+                     (b.status as string) === 'cancelled' ? 'Cancelado' :
+                     (b.status as string) === 'draft' ? 'Rascunho' :
                      b.status}
                   </span>
                   
